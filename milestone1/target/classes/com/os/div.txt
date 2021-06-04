@@ -1,0 +1,19 @@
+-- os
+    ~ os();
+    htb -> memory
+    void store(String, String);
+    String load(String);
+    void print(String);
+    String readFile(String);
+    void WriteFile(String, String);
+
+-- parser
+    ~ parser(os);
+    parse(String);
+
+-- driver 
+    mian();
+        os, parser, []{"p1", "p2"}
+
+System.getProperty("user.dir");
+        
