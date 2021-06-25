@@ -15,6 +15,26 @@ public class OS {
         sc = new Scanner(System.in);
     }
 
+
+    public void loadProgrames(String programs[]){
+
+    }
+
+
+    public int[] getPIDs() {
+        return null;
+    }
+
+    public String nextInst(int PID) {
+        return null;
+    }
+
+
+    public boolean isFinished(int pID) {
+        return false;
+    }
+
+
     public void store(String var, Gen value){
         this.memory.put(var, value);
         this.globalPath = System.getProperty("user.dir");
@@ -54,5 +74,4 @@ public class OS {
     public void closeInputStream(){
         this.sc.close();
     }
-
 }
