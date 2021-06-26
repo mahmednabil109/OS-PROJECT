@@ -32,8 +32,8 @@ public class Parser {
     //     }
     // }
 
-    public Gen _execute(String statment, boolean flag) throws IOException{
-
+    public Gen _execute(int PID, String statment, boolean flag) throws IOException{
+        System.out.println("sta: " + statment);
         // init the needed variables
         String parsedStatment[] = statment.split(" ");
         Gen value;
@@ -41,36 +41,36 @@ public class Parser {
 
         switch (parsedStatment[0]) {
             case "assign":
-                value = _execute(join(parsedStatment, 2), false);
-                os.store(parsedStatment[1], value);
+                value = _execute(PID, join(parsedStatment, 2), false);
+                os.store(PID, parsedStatment[1], value);
                 break;
             case "print":
-                value = _execute(parsedStatment[1], false);
+                value = _execute(PID, parsedStatment[1], false);
                 if (value.type == GenType.NUMBER)
                     os.print(value.intData + "");
                 else
                     os.print(value.stringData);
                 break;
             case "writeFile":
-                fileName = _execute(parsedStatment[1], false).stringData;
-                value = _execute(parsedStatment[2], false);
+                fileName = _execute(PID, parsedStatment[1], false).stringData;
+                value = _execute(PID, parsedStatment[2], false);
                 if (value.type == GenType.NUMBER)
                     os.WriteFile(fileName, value.intData + "");
                 else
                     os.WriteFile(fileName, value.stringData);
                 break;
             case "add":
-                Gen opr1 = _execute(parsedStatment[1], false), opr2 = _execute(parsedStatment[2], false);
+                Gen opr1 = _execute(PID, parsedStatment[1], false), opr2 = _execute(PID, parsedStatment[2], false);
                 if (opr1.type != GenType.NUMBER || opr2.type != GenType.NUMBER)
                     os.print("[ERROR] Can't add none Numeric Values !!");
-                os.store(parsedStatment[1], new Gen(GenType.NUMBER, opr1.intData + opr2.intData, ""));
+                os.store(PID, parsedStatment[1], new Gen(GenType.NUMBER, opr1.intData + opr2.intData, ""));
                 // we make the add able to return values to allow for more functionalities
-                return os.load(parsedStatment[1]);
+                return os.load(PID, parsedStatment[1]);
             case "input":
                 String input = os.input();
-                return _execute(input, true);
+                return _execute(PID, input, true);
             case "readFile":
-                fileName = _execute(parsedStatment[1], false).stringData;
+                fileName = _execute(PID, parsedStatment[1], false).stringData;
                 val = os.readFile(fileName);
                 return new Gen(GenType.STRING, 0, val);
             default:
@@ -84,10 +84,10 @@ public class Parser {
                     if(flag)
                         return new Gen(GenType.STRING, 0, statment);
                     
-                    if (!os.exists(val)) {
+                    if (!os.exists(PID, val)) {
                        return new Gen(GenType.STRING, 0, val);
                     } else {
-                        return os.load(val);
+                        return os.load(PID, val);
                     }
                 }
         }

@@ -6,42 +6,80 @@ import java.util.*;
 
 public class OS {
 
-    Hashtable<String, Gen> memory;
+    Memory memory;
     private String globalPath;
     private Scanner sc;
+    public static int maxLines;
+    private int numOfPrograms;
+    private Vector<List<String>> programs;
+
 
 
     public OS(){
         sc = new Scanner(System.in);
+        this.programs = new Vector<>();
+        this.memory = new Memory();
+    }
+
+    public int getPrograms(){
+        return this.programs.size();
     }
 
 
     public void loadProgrames(String programs[]){
+        int max = 0; // this.memory.put(var, value);
+        this.globalPath = System.getProperty("user.dir");
+    	try{
+    		for(String program: programs) {
+    			List<String> instructions = Files.readAllLines(Paths.get(globalPath, program));
+                this.programs.add(instructions);
+    			if(instructions.size() > max) 
+    				max = instructions.size();
+    			
+    		}
+            
+        }catch(IOException e){
+            e.printStackTrace();
+        }
+    	numOfPrograms = programs.length;
+    	maxLines= max;
 
-    }
+        this.initMemory();
 
-
-    public int[] getPIDs() {
-        return null;
     }
 
     public String nextInst(int PID) {
-        return null;
+        int base = PID * (2 * this.maxLines + 5);
+        int pc = (int) this.memory.memory[base + 2].value;
+        System.out.println("PC&TYPE: " + pc + " " + this.memory.memory[pc].value.getClass());
+        String inst = (String) this.memory.memory[pc++].value;
+        this.memory.memory[base + 2] = new Word("PC", pc);
+        return inst;
     }
 
 
-    public boolean isFinished(int pID) {
+    public boolean isFinished(int PID) {
+        // 34 + 11 -> 45
+        int base = PID * (2 * this.maxLines + 5);
+        int pc = (int) this.memory.memory[base + 2].value;
+        // System.out.println("is finished PC&TYPE: " + pc + " " + this.memory.memory[pc].value.getClass());
+        if(pc >= (base + (this.maxLines + 5)))
+            return true;
+        if(this.memory.memory[pc] == null)
+            return true;
         return false;
+
     }
 
 
-    public void store(String var, Gen value){
-        this.memory.put(var, value);
-        this.globalPath = System.getProperty("user.dir");
+    public void store(int PID, String var, Gen value){
+        this.memory.store(PID, var, value);
+        // this.memory.put(var, value);
+        // this.globalPath = System.getProperty("user.dir");
     }
 
-    public Gen load(String var){
-        return this.memory.get(var);
+    public Gen load(int PID, String var){
+        return (Gen) this.memory.load(PID, var);
     }
 
     public void print(String statment){
@@ -54,11 +92,11 @@ public class OS {
     }
 
     public void initMemory(){
-        this.memory = new Hashtable<>();
+        this.memory.init(this.numOfPrograms, this.maxLines, this.programs);
     }
 
-    public boolean exists(String var){
-        return this.memory.containsKey(var);
+    public boolean exists(int pid, String var){
+        return this.memory.exists(pid, var);
     }
 
     public String readFile(String fileName) throws IOException{

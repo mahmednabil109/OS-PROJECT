@@ -16,21 +16,21 @@ public class Scheduler {
         this.os = os;
         this.parser = parser;
         this.readyQueue = new LinkedList<Integer>();
-        this.init(os.getPIDs());
-    }
-
-    public void init(int PIDs[]){
-        for(int PID : PIDs)
-            this.readyQueue.add(PID);
     }
 
     public void run() throws IOException{
+        // init the ready queue
+        for(int i=0; i<this.os.getPrograms();i++)
+            this.readyQueue.add(i);
+
+        // manage the RR 
         next: while(!readyQueue.isEmpty()){
             int PID = readyQueue.poll();
             for(int i=0; i<this.MAX_CYCLES; i++){
                 if(os.isFinished(PID))
                     continue next;
-                parser._execute(os.nextInst(PID), false);
+                System.out.println("pid: " + PID);
+                parser._execute(PID, os.nextInst(PID), false);
             }
             readyQueue.add(PID);
         }
