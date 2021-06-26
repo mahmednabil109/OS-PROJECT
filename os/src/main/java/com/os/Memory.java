@@ -13,7 +13,7 @@ public class Memory {
     /*
         process address space
         0: PID
-        1: PState 1 --> ready , 0 --> finished
+        1: PState 2 --> running, 1 --> ready , 0 --> finished
         2: PC
         3: minadder
         4: maxadder
@@ -38,6 +38,15 @@ public class Memory {
             this.memory[base + 2] = new Word("_$PC", base + 5);
             this.memory[base + 3] = new Word("_$MinAdder", base + 4 + maxLines);
             this.memory[base + 4] = new Word("_$MaxAdder", base + 4 + 2 * maxLines);
+
+            // printing
+            System.out.printf("PCB: PID    [%2d] \n", i);
+            System.out.printf("PCB: PState [%2d] \n", 1);
+            System.out.printf("PCB: PC     [%2d] \n", base + 5);
+            System.out.printf("PCB: MIN   @[%2d]\n", base + 4 + maxLines);
+            System.out.printf("PCB: MAX   @[%2d]\n", base + 4 + 2 * maxLines);
+            System.out.printf("PCB: @[%d]\n", base + 4 + maxLines);
+
             int j=0;
             for(j=0; j<programs.get(i).size(); j++){
                 this.memory[base + j +  5] = new Word(
@@ -45,11 +54,10 @@ public class Memory {
                     ,
                     programs.get(i).get(j)
                 );
-                System.out.println("tmp: " + (base + j + 5) + " " +  programs.get(i).get(j));
+                System.out.printf("CODE: %s\n", programs.get(i).get(j));
             }
             for(; j<maxLines;j++){
                 this.memory[base + j +  5] = null;
-                System.out.println("tmp: " + (base + j + 5) + " " +  "null");
             }
         }
     }
@@ -59,6 +67,7 @@ public class Memory {
 		for(int i = starting; i< starting + (2*OS.maxLines + 5) ; i++) {
             if(memory[i] == null) continue;
 			if(memory[i].name.equals(name)) {
+                System.out.printf("[Memory Accessed] @[%d] %s\n", i, memory[i].toString());
 				return memory[i].value;
 			}
 		}
@@ -69,14 +78,15 @@ public class Memory {
 		Word saveWord = new Word(name, value);
 		
 		int starting = pid * (2*OS.maxLines + 5) + 4 + OS.maxLines + 1;
-        System.out.println("store : " + pid + " " + starting);
 		for(int i = starting; i< starting + OS.maxLines;i++) {
 
             if(memory[i]!=null && memory[i].name.equals(name)){
                 memory[i] = saveWord;
+                System.out.printf("[Memory Accessed] @[%d] %s\n", i, memory[i].toString());
                 return;
             } else if(memory[i]==null) {
-				memory[i] = saveWord;
+                memory[i] = saveWord;
+                System.out.printf("[Memory Accessed] @[%d] %s\n", i, memory[i].toString());
 				return;
 			}
 		}

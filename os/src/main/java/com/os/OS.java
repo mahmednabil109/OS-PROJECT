@@ -51,7 +51,6 @@ public class OS {
     public String nextInst(int PID) {
         int base = PID * (2 * this.maxLines + 5);
         int pc = (int) this.memory.memory[base + 2].value;
-        System.out.println("PC&TYPE: " + pc + " " + this.memory.memory[pc].value.getClass());
         String inst = (String) this.memory.memory[pc++].value;
         this.memory.memory[base + 2] = new Word("PC", pc);
         return inst;
@@ -62,7 +61,8 @@ public class OS {
         // 34 + 11 -> 45
         int base = PID * (2 * this.maxLines + 5);
         int pc = (int) this.memory.memory[base + 2].value;
-        // System.out.println("is finished PC&TYPE: " + pc + " " + this.memory.memory[pc].value.getClass());
+        if(((int) this.memory.memory[base + 1].value) == 0) 
+            return true;
         if(pc >= (base + (this.maxLines + 5)))
             return true;
         if(this.memory.memory[pc] == null)
@@ -71,11 +71,14 @@ public class OS {
 
     }
 
+    public void changeState(int PID, int state){
+        int base = PID * (2 * this.maxLines + 5);
+        this.memory.memory[base + 1] = new Word("_$PState", state);
+    }
+
 
     public void store(int PID, String var, Gen value){
         this.memory.store(PID, var, value);
-        // this.memory.put(var, value);
-        // this.globalPath = System.getProperty("user.dir");
     }
 
     public Gen load(int PID, String var){

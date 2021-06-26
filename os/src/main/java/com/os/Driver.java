@@ -22,12 +22,6 @@ public final class Driver {
 
         scheduler.run();
 
-
-        // for(String programName : programs){
-        //     System.out.printf("Executing program < %s > \n", programName);
-        //     parser.parse(programName);
-        // }
-
         os.closeInputStream();
         
     }

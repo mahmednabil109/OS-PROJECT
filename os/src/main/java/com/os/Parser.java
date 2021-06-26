@@ -20,20 +20,7 @@ public class Parser {
         return this.os;
     }
 
-    // public void parse(String ProgramName){
-    //     try{
-    //         List<String> instructions = Files.readAllLines(Paths.get(globalPath, ProgramName));
-    //         this.os.initMemory();
-    //         for(String instruction : instructions){
-    //             this._execute(instruction, false);
-    //         }
-    //     }catch(IOException e){
-    //         e.printStackTrace();
-    //     }
-    // }
-
     public Gen _execute(int PID, String statment, boolean flag) throws IOException{
-        System.out.println("sta: " + statment);
         // init the needed variables
         String parsedStatment[] = statment.split(" ");
         Gen value;

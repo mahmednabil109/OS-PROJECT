@@ -14,9 +14,8 @@ public class Gen {
 
     public String toString() {
         if (type == GenType.NUMBER)
-            System.out.printf("<NUMBER %d>", intData);
+            return "<NUMBER "+ intData +">";
         else
-            System.out.printf("<STRING %s>", stringData);
-        return "";
+            return "<STRING "+stringData+">";
     }
 }
